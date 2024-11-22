@@ -1,6 +1,9 @@
+import 'package:after_layout/after_layout.dart';
+import 'package:fast_app_base/common/cli_common.dart';
 import 'package:fast_app_base/screen/main/tab/tab_item.dart';
 import 'package:fast_app_base/screen/main/tab/tab_navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import '../../common/common.dart';
 import 'w_menu_drawer.dart';
@@ -12,9 +15,24 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
-  TabItem _currentTab = TabItem.home;
-  final tabs = [TabItem.home, TabItem.favorite];
+class MainScreenState extends State<MainScreen>
+    with SingleTickerProviderStateMixin, AfterLayoutMixin {
+
+  FutureOr<void> afterFirstLayout(BuildContext context) {
+    delay(() {
+      FlutterNativeSplash.remove();
+    }, 1500.ms);
+  }
+
+  TabItem _currentTab = TabItem.game;
+  final tabs = [
+    TabItem.game,
+    TabItem.news,
+    TabItem.league,
+    TabItem.following,
+    TabItem.more,
+  ];
+
   final List<GlobalKey<NavigatorState>> navigatorKeys = [];
 
   int get _currentIndex => tabs.indexOf(_currentTab);
@@ -53,7 +71,7 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
   }
 
   bool get isRootPage =>
-      _currentTab == TabItem.home && _currentTabNavigationKey.currentState?.canPop() == false;
+      _currentTab == TabItem.game && _currentTabNavigationKey.currentState?.canPop() == false;
 
   IndexedStack get pages => IndexedStack(
       index: _currentIndex,
@@ -74,8 +92,8 @@ class MainScreenState extends State<MainScreen> with SingleTickerProviderStateMi
         return;
       }
 
-      if (_currentTab != TabItem.home) {
-        _changeTab(tabs.indexOf(TabItem.home));
+      if (_currentTab != TabItem.game) {
+        _changeTab(tabs.indexOf(TabItem.game));
       }
     }
   }
